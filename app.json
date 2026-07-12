@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "DisciplineOS AI",
+    "slug": "disciplineos-mobile",
+    "scheme": "disciplineos",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "experiments": {
+      "typedRoutes": true
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "android": {
+      "package": "com.disciplineos.mobile"
+    },
+    "ios": {
+      "bundleIdentifier": "com.disciplineos.mobile"
+    }
+  }
+}
