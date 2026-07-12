@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "DisciplineOS AI",
-    "slug": "disciplineos-mobile",
+    "slug": "disciplineos",
     "scheme": "disciplineos",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
