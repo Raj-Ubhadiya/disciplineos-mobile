@@ -1,6 +1,6 @@
 import type { PropsWithChildren, ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { disciplineTheme } from '@/shared/theme';
@@ -10,10 +10,14 @@ export function ScreenContainer({
   header,
   scroll = true,
   contentStyle,
+  refreshing = false,
+  onRefresh,
 }: PropsWithChildren<{
   header?: ReactNode;
   scroll?: boolean;
   contentStyle?: StyleProp<ViewStyle>;
+  refreshing?: boolean;
+  onRefresh?: () => void;
 }>) {
   const content = (
     <View style={[styles.content, contentStyle]}>
@@ -25,7 +29,11 @@ export function ScreenContainer({
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       {scroll ? (
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          refreshControl={onRefresh ? <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[disciplineTheme.colors.primary]} /> : undefined}
+        >
           {content}
         </ScrollView>
       ) : (

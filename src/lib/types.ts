@@ -102,6 +102,54 @@ export type FocusSession = {
   habitId?: string | null;
 };
 
+export type DistractionLog = {
+  id: string;
+  userId?: string;
+  platform: string;
+  minutesLost: number;
+  triggerReason: string | null;
+  moodBefore: string | null;
+  moodAfter: string | null;
+  replacementAction: string | null;
+  createdAt: string;
+};
+
+export type DistractionSummary = {
+  totalLogs: number;
+  totalMinutesLost: number;
+  topPlatform: string | null;
+  platformTotals: Record<string, number>;
+  latestReplacementAction: string | null;
+};
+
+export type CreateDistractionInput = {
+  platform: string;
+  minutesLost: number;
+  triggerReason?: string;
+  moodBefore?: string;
+  moodAfter?: string;
+  replacementAction?: string;
+};
+
+export type UpdateDistractionInput = Partial<CreateDistractionInput>;
+
+export type AnalyticsSummary = {
+  focusScore: number;
+  activeGoals: number;
+  totalGoals: number;
+  totalHabits: number;
+  habitCompletions: number;
+  totalStreak: number;
+  distractionMinutesLost: number;
+  topDistractionPlatform: string | null;
+  accountabilityCheckIns: number;
+  aiPlansGenerated: number;
+  focusSessionMinutes: number;
+  distractionFreeFocusSessions: number;
+  dailyReflections: number;
+  averageReflectionScore: number;
+};
+
 export type CreateGoalInput = {
   title: string;
   category: string;
@@ -231,4 +279,7 @@ export type WorkspaceSnapshot = {
   reflectionSummary: DailyReflectionSummary | null;
   focusSessions: FocusSession[];
   focusSessionSummary: FocusSessionSummary | null;
+  distractionLogs: DistractionLog[];
+  distractionSummary: DistractionSummary | null;
+  analyticsSummary: AnalyticsSummary | null;
 };

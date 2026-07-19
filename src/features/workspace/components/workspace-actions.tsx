@@ -28,6 +28,18 @@ const actionCards = [
     title: 'Create a reminder',
     copy: 'Set a specific nudge so the right next action shows up before you drift.',
   },
+  {
+    route: '/distractions' as const,
+    eyebrow: 'Attention',
+    title: 'Review distractions',
+    copy: 'Log what pulled you away and choose a practical replacement action.',
+  },
+  {
+    route: '/analytics' as const,
+    eyebrow: 'Progress',
+    title: 'Open analytics',
+    copy: 'See focus, habit, reflection, and distraction momentum together.',
+  },
 ];
 
 export function WorkspaceActions() {

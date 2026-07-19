@@ -12,20 +12,24 @@ import type {
   CreateGoalInput,
   CreateReflectionInput,
   CreateReminderInput,
+  CreateDistractionInput,
   UpdateProfileInput,
   UpdateGoalInput,
   UpdateHabitInput,
   UpdateReminderInput,
+  UpdateDistractionInput,
 } from '@/lib/types';
 import {
   completeHabit,
   completeReminder,
+  createDistraction,
   createFocusSession,
   createGoal,
   createHabit,
   deleteGoal,
   deleteHabit,
   deleteReminder,
+  deleteDistraction,
   fetchGoal,
   fetchHabit,
   createReflection,
@@ -35,6 +39,7 @@ import {
   updateGoal,
   updateHabit,
   updateReminder,
+  updateDistraction,
 } from '@/features/workspace/workspace-service';
 
 export const workspaceQueryKey = ['workspace'] as const;
@@ -110,6 +115,15 @@ export function useUpdateReminderMutation(token: string) {
 }
 export function useDeleteReminderMutation(token: string) {
   return useResourceMutation(token, (id: string) => deleteReminder(token, id));
+}
+export function useCreateDistractionMutation(token: string) {
+  return useResourceMutation(token, (input: CreateDistractionInput) => createDistraction(token, input));
+}
+export function useUpdateDistractionMutation(token: string) {
+  return useResourceMutation(token, ({ id, input }: { id: string; input: UpdateDistractionInput }) => updateDistraction(token, id, input));
+}
+export function useDeleteDistractionMutation(token: string) {
+  return useResourceMutation(token, (id: string) => deleteDistraction(token, id));
 }
 
 export function useCompleteHabitMutation(

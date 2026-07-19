@@ -8,6 +8,10 @@ import type {
   DailyPlan,
   DailyReflection,
   DailyReflectionSummary,
+  DistractionLog,
+  DistractionSummary,
+  AnalyticsSummary,
+  CreateDistractionInput,
   FocusSession,
   FocusSessionSummary,
   Goal,
@@ -18,6 +22,7 @@ import type {
   UpdateGoalInput,
   UpdateHabitInput,
   UpdateReminderInput,
+  UpdateDistractionInput,
   UserProfile,
   WorkspaceSnapshot,
 } from '@/lib/types';
@@ -38,6 +43,9 @@ export async function fetchWorkspaceSnapshot(token: string): Promise<WorkspaceSn
     reflectionSummary,
     focusSessions,
     focusSessionSummary,
+    distractionLogs,
+    distractionSummary,
+    analyticsSummary,
   ] =
     await Promise.all([
       fetchAuthenticatedUser(token),
@@ -52,6 +60,9 @@ export async function fetchWorkspaceSnapshot(token: string): Promise<WorkspaceSn
       apiRequest<DailyReflectionSummary>('/reflections/summary', undefined, token).catch(() => null),
       apiRequest<FocusSession[]>('/focus-sessions', undefined, token).catch(() => []),
       apiRequest<FocusSessionSummary>('/focus-sessions/summary', undefined, token).catch(() => null),
+      apiRequest<DistractionLog[]>('/distractions', undefined, token).catch(() => []),
+      apiRequest<DistractionSummary>('/distractions/summary', undefined, token).catch(() => null),
+      apiRequest<AnalyticsSummary>('/analytics/summary', undefined, token).catch(() => null),
     ]);
 
   return {
@@ -67,7 +78,22 @@ export async function fetchWorkspaceSnapshot(token: string): Promise<WorkspaceSn
     reflectionSummary,
     focusSessions,
     focusSessionSummary,
+    distractionLogs,
+    distractionSummary,
+    analyticsSummary,
   };
+}
+
+export async function createDistraction(token: string, input: CreateDistractionInput) {
+  return apiRequest<DistractionLog>('/distractions', { method: 'POST', body: JSON.stringify(input) }, token);
+}
+
+export async function updateDistraction(token: string, id: string, input: UpdateDistractionInput) {
+  return apiRequest<DistractionLog>(`/distractions/${id}`, { method: 'PATCH', body: JSON.stringify(input) }, token);
+}
+
+export async function deleteDistraction(token: string, id: string) {
+  return apiRequest(`/distractions/${id}`, { method: 'DELETE' }, token);
 }
 
 export async function createGoal(token: string, input: CreateGoalInput) {
