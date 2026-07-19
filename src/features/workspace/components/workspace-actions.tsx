@@ -40,6 +40,18 @@ const actionCards = [
     title: 'Open analytics',
     copy: 'See focus, habit, reflection, and distraction momentum together.',
   },
+  {
+    route: '/ai-planner' as const,
+    eyebrow: 'Plan',
+    title: 'Open AI Planner',
+    copy: 'Convert a meaningful dream into goals, habits, and reminders.',
+  },
+  {
+    route: '/accountability' as const,
+    eyebrow: 'Support',
+    title: 'Accountability partners',
+    copy: 'Share a clear commitment and keep supportive check-ins visible.',
+  },
 ];
 
 export function WorkspaceActions() {

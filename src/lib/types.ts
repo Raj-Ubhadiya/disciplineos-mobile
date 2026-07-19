@@ -79,7 +79,22 @@ export type Relationship = {
   status: string;
   createdAt?: string;
   updatedAt?: string;
+  partner?: { id: string; email: string; name: string | null } | null;
+  checkIns?: RelationshipCheckIn[];
 };
+
+export type RelationshipCheckIn = { id: string; relationshipId: string; userId: string; mood: string; appreciation: string | null; concern: string | null; commitment: string | null; createdAt: string };
+export type CreateRelationshipInput = { partnerEmail?: string; partnerName?: string };
+export type CreateCheckInInput = { mood: string; appreciation?: string; concern?: string; commitment?: string };
+
+export type AiPlan = {
+  id: string; userId?: string; dream: string; currentSituation: string | null; mainObstacle: string | null;
+  suggestedGoals: { title: string; category: string; priority: number; whyItMatters: string }[];
+  suggestedHabits: { title: string; frequency: string; reminderTime: string }[];
+  distractionStrategy: { trigger: string; replacementAction: string; environmentRule: string };
+  weeklyPlan: { day: string; focus: string; action: string }[]; mentorStory: string; createdAt: string;
+};
+export type CreateAiPlanInput = { dream: string; currentSituation?: string; mainObstacle?: string; roleModel?: string };
 
 export type FocusSessionSummary = {
   totalSessions?: number;
@@ -282,4 +297,5 @@ export type WorkspaceSnapshot = {
   distractionLogs: DistractionLog[];
   distractionSummary: DistractionSummary | null;
   analyticsSummary: AnalyticsSummary | null;
+  aiPlans: AiPlan[];
 };

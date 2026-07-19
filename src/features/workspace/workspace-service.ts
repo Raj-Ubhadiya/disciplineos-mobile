@@ -25,6 +25,10 @@ import type {
   UpdateDistractionInput,
   UserProfile,
   WorkspaceSnapshot,
+  AiPlan,
+  CreateAiPlanInput,
+  CreateRelationshipInput,
+  CreateCheckInInput,
 } from '@/lib/types';
 import { fetchAuthenticatedUser } from '@/features/auth/auth-service';
 import { apiRequest } from '@/shared/api/http-client';
@@ -46,6 +50,7 @@ export async function fetchWorkspaceSnapshot(token: string): Promise<WorkspaceSn
     distractionLogs,
     distractionSummary,
     analyticsSummary,
+    aiPlans,
   ] =
     await Promise.all([
       fetchAuthenticatedUser(token),
@@ -63,6 +68,7 @@ export async function fetchWorkspaceSnapshot(token: string): Promise<WorkspaceSn
       apiRequest<DistractionLog[]>('/distractions', undefined, token).catch(() => []),
       apiRequest<DistractionSummary>('/distractions/summary', undefined, token).catch(() => null),
       apiRequest<AnalyticsSummary>('/analytics/summary', undefined, token).catch(() => null),
+      apiRequest<AiPlan[]>('/ai-plans', undefined, token).catch(() => []),
     ]);
 
   return {
@@ -81,7 +87,27 @@ export async function fetchWorkspaceSnapshot(token: string): Promise<WorkspaceSn
     distractionLogs,
     distractionSummary,
     analyticsSummary,
+    aiPlans,
   };
+}
+
+export async function createAiPlan(token: string, input: CreateAiPlanInput) {
+  return apiRequest<AiPlan>('/ai-plans', { method: 'POST', body: JSON.stringify(input) }, token);
+}
+export async function activateAiPlan(token: string, id: string) {
+  return apiRequest(`/ai-plans/${id}/activate`, { method: 'POST' }, token);
+}
+export async function createRelationship(token: string, input: CreateRelationshipInput) {
+  return apiRequest<Relationship>('/relationships', { method: 'POST', body: JSON.stringify(input) }, token);
+}
+export async function fetchRelationship(token: string, id: string) {
+  return apiRequest<Relationship>(`/relationships/${id}`, undefined, token);
+}
+export async function createRelationshipCheckIn(token: string, id: string, input: CreateCheckInInput) {
+  return apiRequest(`/relationships/${id}/check-ins`, { method: 'POST', body: JSON.stringify(input) }, token);
+}
+export async function deleteRelationship(token: string, id: string) {
+  return apiRequest(`/relationships/${id}`, { method: 'DELETE' }, token);
 }
 
 export async function createDistraction(token: string, input: CreateDistractionInput) {

@@ -18,6 +18,9 @@ import type {
   UpdateHabitInput,
   UpdateReminderInput,
   UpdateDistractionInput,
+  CreateAiPlanInput,
+  CreateRelationshipInput,
+  CreateCheckInInput,
 } from '@/lib/types';
 import {
   completeHabit,
@@ -40,6 +43,12 @@ import {
   updateHabit,
   updateReminder,
   updateDistraction,
+  createAiPlan,
+  activateAiPlan,
+  createRelationship,
+  fetchRelationship,
+  createRelationshipCheckIn,
+  deleteRelationship,
 } from '@/features/workspace/workspace-service';
 
 export const workspaceQueryKey = ['workspace'] as const;
@@ -58,6 +67,9 @@ export function useGoalQuery(token: string | null, id: string) {
 
 export function useHabitQuery(token: string | null, id: string) {
   return useQuery({ queryKey: ['habit', id], queryFn: () => fetchHabit(token as string, id), enabled: Boolean(token && id) });
+}
+export function useRelationshipQuery(token: string | null, id: string) {
+  return useQuery({ queryKey: ['relationship', id], queryFn: () => fetchRelationship(token as string, id), enabled: Boolean(token && id) });
 }
 
 function useWorkspaceInvalidation() {
@@ -125,6 +137,11 @@ export function useUpdateDistractionMutation(token: string) {
 export function useDeleteDistractionMutation(token: string) {
   return useResourceMutation(token, (id: string) => deleteDistraction(token, id));
 }
+export function useCreateAiPlanMutation(token: string) { return useResourceMutation(token, (input: CreateAiPlanInput) => createAiPlan(token, input)); }
+export function useActivateAiPlanMutation(token: string) { return useResourceMutation(token, (id: string) => activateAiPlan(token, id)); }
+export function useCreateRelationshipMutation(token: string) { return useResourceMutation(token, (input: CreateRelationshipInput) => createRelationship(token, input)); }
+export function useCreateCheckInMutation(token: string) { return useResourceMutation(token, ({ id, input }: { id: string; input: CreateCheckInInput }) => createRelationshipCheckIn(token, id, input)); }
+export function useDeleteRelationshipMutation(token: string) { return useResourceMutation(token, (id: string) => deleteRelationship(token, id)); }
 
 export function useCompleteHabitMutation(
   token: string,

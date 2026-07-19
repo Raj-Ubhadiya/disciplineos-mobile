@@ -1,0 +1,17 @@
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Alert, StyleSheet, Text } from 'react-native';
+import { useState } from 'react';
+import { useAuth } from '@/features/auth/auth-provider';
+import { useCreateCheckInMutation, useDeleteRelationshipMutation, useRelationshipQuery } from '@/features/workspace/workspace-query';
+import { disciplineTheme } from '@/shared/theme';
+import { AppButton, AppCard, AppInput, FormField, ScreenContainer, SectionHeader } from '@/shared/ui';
+
+export function AccountabilityDetailScreen() {
+  const router = useRouter(); const { id } = useLocalSearchParams<{ id: string }>(); const { token } = useAuth(); const query = useRelationshipQuery(token, id); const checkIn = useCreateCheckInMutation(token ?? ''); const remove = useDeleteRelationshipMutation(token ?? '');
+  const [mood, setMood] = useState('focused'); const [appreciation, setAppreciation] = useState(''); const [concern, setConcern] = useState(''); const [commitment, setCommitment] = useState('');
+  const relationship = query.data; if (!relationship) return <ScreenContainer><Text>Loading partner…</Text></ScreenContainer>;
+  function submit() { if (!mood.trim()) return; checkIn.mutate({ id, input: { mood: mood.trim(), ...(appreciation.trim() ? { appreciation: appreciation.trim() } : {}), ...(concern.trim() ? { concern: concern.trim() } : {}), ...(commitment.trim() ? { commitment: commitment.trim() } : {}) } }, { onSuccess: () => { setAppreciation(''); setConcern(''); setCommitment(''); void query.refetch(); } }); }
+  function confirmDelete() { Alert.alert('Remove partner?', 'Their relationship and check-ins will no longer be available.', [{ text: 'Cancel', style: 'cancel' }, { text: 'Remove', style: 'destructive', onPress: () => remove.mutate(id, { onSuccess: () => router.replace('/accountability' as never) }) }]); }
+  return <ScreenContainer contentStyle={styles.content}><SectionHeader eyebrow="Partner" title={relationship.partner?.name ?? relationship.partnerName ?? 'Accountability partner'} subtitle={relationship.status} /><AppCard><FormField label="Mood"><AppInput value={mood} onChangeText={setMood} maxLength={80} /></FormField><FormField label="Appreciation"><AppInput multiline value={appreciation} onChangeText={setAppreciation} maxLength={500} /></FormField><FormField label="Concern"><AppInput multiline value={concern} onChangeText={setConcern} maxLength={500} /></FormField><FormField label="Commitment"><AppInput multiline value={commitment} onChangeText={setCommitment} maxLength={500} /></FormField><AppButton loading={checkIn.isPending} onPress={submit}>Send check-in</AppButton></AppCard><SectionHeader eyebrow="History" title="Recent check-ins" />{(relationship.checkIns ?? []).map((item) => <AppCard key={item.id}><Text style={styles.title}>{item.mood}</Text>{item.commitment ? <Text style={styles.copy}>Commitment: {item.commitment}</Text> : null}<Text style={styles.meta}>{new Date(item.createdAt).toLocaleString()}</Text></AppCard>)}<AppButton variant="secondary" loading={remove.isPending} onPress={confirmDelete}>Remove partner</AppButton></ScreenContainer>;
+}
+const styles = StyleSheet.create({ content: { gap: disciplineTheme.spacing.lg }, title: { color: disciplineTheme.colors.text, fontSize: 17, fontWeight: '800' }, copy: { color: disciplineTheme.colors.textMuted, fontSize: 14, lineHeight: 22 }, meta: { color: disciplineTheme.colors.textFaint, fontSize: 12 } });
